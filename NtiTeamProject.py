@@ -1,40 +1,47 @@
 from datetime import datetime
 import difflib
-class LostItem :
-    def __init__(self,type,brand,colour,description):
-        self.type=type
-        self.brand=brand
-        self.colour=colour
-        self.description=description
-        self.date_found=datetime.now()
+
+class LostItem:
+    def __init__(self, type, brand, colour, description):
+        self.type = type
+        self.brand = brand
+        self.colour = colour
+        self.description = description
+        self.date_found = datetime.now()
+        self.status = "found"  # default status when registered
+
     def show_info(self):
-        return(f'type : {self.type} ,brand : {self.brand} , colour : {self.colour} , description : {self.description} ')
-class System :
+        return (f"Type: {self.type}, Brand: {self.brand}, "
+                f"Colour: {self.colour}, Description: {self.description}, "
+                f"Status: {self.status}")
+
+class System:
     def __init__(self):
-        self.items=[]
-    def add_item (self , item ):
+        self.items = []
+
+    def add_item(self, item):
         self.items.append(item)
 
-    def search_item (self , item, search_description):
-    
-        if item in self.items:
-            matches = []
+    def search_item(self, search_description):
+        matches = []
         for item in self.items:
-            similarity = difflib.SequenceMatcher(None, search_description.lower(), item.description.lower()).ratio() #compare between two descriptions
-            if similarity > 0.6:  # 60% simmilar 
+            similarity = difflib.SequenceMatcher(
+                None, search_description.lower(), item.description.lower()
+            ).ratio()
+            if similarity > 0.6:  # 60% similarity means its the same
+                item.status = "claimed"  # mark as claimed when matched
                 matches.append((item, similarity))
         return matches
 
-    def show_items (self):
-        for item in self.items :
+    def show_items(self):
+        for item in self.items:
             print(item.show_info())
-    def remove_item(self,item,status):
-        self.status=status
-        days=(datetime.now()-item.date_found).days
-        if days >=30:
+
+    def remove_item(self, item):
+        days = (datetime.now() - item.date_found).days
+        if days >= 30 or item.status == "claimed":
             self.items.remove(item)
-        if self.status=="found":
-            self.items.remove(item)
+
         
 
         
