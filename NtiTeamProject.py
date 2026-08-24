@@ -15,15 +15,21 @@ class System :
     def add_item (self , item ):
         self.items.append(item)
 
-    def search_item (self , item, search_description):
-    
-        if item in self.items:
-            matches = []
-        for item in self.items:
-            similarity = difflib.SequenceMatcher(None, search_description.lower(), item.description.lower()).ratio() #compare between two descriptions
-            if similarity > 0.6:  # 60% simmilar 
-                matches.append((item, similarity))
-        return matches
+ def search_item(self, search_description):
+
+    matches = []
+
+    for item in self.items:
+        similarity = difflib.SequenceMatcher(
+            None,
+            search_description.lower(),
+            item.description.lower()
+        ).ratio()
+
+        if similarity > 0.6:
+            matches.append((item, similarity))
+
+    return matches
 
     def show_items (self):
         for item in self.items :
