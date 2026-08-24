@@ -18,8 +18,6 @@ class LostItem:
 
 
 
-
-
 class System:
     def __init__(self):
         self.items = []
@@ -33,14 +31,20 @@ class System:
             similarity = difflib.SequenceMatcher(
                 None, search_description.lower(), item.description.lower()
             ).ratio()
-            if similarity > 0.6:  # 60% similarity means its the same
-                item.status = "claimed"  # mark as claimed when matched
-                matches.append((item, similarity))
+            if similarity > 0.5:
+                print(f"Possible match: {item.show_info()} (Similarity: {similarity})")
+                confirm = input("Is this your item? (yes/no): ")
+                if confirm.lower() == "yes":
+                    item.status = "claimed"
+                    matches.append((item, similarity))
         return matches
 
     def show_items(self):
         for item in self.items:
-            print(item.show_info())
+            if not self.items:
+                print("❌ No items registered yet.")
+            else:
+                print(item.show_info())
 
     def remove_item(self, item):
         days = (datetime.now() - item.date_found).days
@@ -57,11 +61,12 @@ while True:
 Enter found if you found a lost item and want to register it :''')
     print("\n=====================================================\n")
     if welcome.lower() =='found':
-        type1=input("Enter the type of object that you found(bag-passport-book-clothes): ")
+        type1=input("Enter the type of object that you found(bag-passport-book-clothes-others): ")
         brand1=input("Enter the brand or the name of this object: ")
         colour1=input("Enter the color of the object: ")
         description1=input("Enter the object's description: ")
         lostitem1=LostItem(type1,brand1,colour1,description1)
+        system1.add_item(lostitem1)
         continuation=int(input('Enter 1 to return to the first menu\nEnter 2 to Exit: '))
         if continuation==1:
             continue
@@ -82,14 +87,16 @@ Enter found if you found a lost item and want to register it :''')
             matches = system1.search_item(search_desc)  # ✅ pass description
             if matches:
                 for item, sim in matches:
-                    print(f"Match found: {item.show_info()} (Similarity: {sim:.2f})")
+                    print(f"Match found: {item.show_info()} (Similarity: {sim})")
+                    system1.remove_item(item)
             else:
                 print("No matching items found.")
-        else:
-            print("Invalid choice")
+        elif choice == 3:
+            print("Exiting")
             break
     else:
         print("Invalid choice, Exiting")
+        system1.remove_item()
         break
     
      
