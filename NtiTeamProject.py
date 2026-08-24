@@ -22,7 +22,6 @@ class System:
     def add_item(self, item):
         self.items.append(item)
 
-<<<<<<< HEAD
     def search_item(self, search_description):
         matches = []
         for item in self.items:
@@ -33,23 +32,6 @@ class System:
                 item.status = "claimed"  # mark as claimed when matched
                 matches.append((item, similarity))
         return matches
-=======
- def search_item(self, search_description):
-
-    matches = []
-
-    for item in self.items:
-        similarity = difflib.SequenceMatcher(
-            None,
-            search_description.lower(),
-            item.description.lower()
-        ).ratio()
-
-        if similarity > 0.6:
-            matches.append((item, similarity))
-
-    return matches
->>>>>>> a872aa788e39ada4ec405c4555f8f4d0f2509046
 
     def show_items(self):
         for item in self.items:
@@ -98,8 +80,10 @@ while True:
         elif choice==2:
             system1.search_item()
         else:
+            print("Invalid choice")
             break
     else:
-        break
-        print("Invalid choice")
-        break
+        print("Invalid choice,Try again")
+        continue
+     
+        
