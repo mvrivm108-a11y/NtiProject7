@@ -1,16 +1,10 @@
-from datetime import datetime
-import difflib
-import json
-import os
-from lost_item import LostItem
-from request_item import LostRequest
 class System:
     def __init__(self):
         self.items = []
         self.data_file = "lost_items_data.json"
         self.load_data()
-        self.requests= []
-        self.requests_file= "lost_requests_data.json"
+        self.requests = []
+        self.requests_file = "lost_requests_data.json"
         self.load_requests()
 
     def save_data(self):
@@ -24,18 +18,18 @@ class System:
             print(f"Error saving data: {e}")
 
     def load_data(self):
-            """Load items from JSON file"""
-            try:
-                if os.path.exists(self.data_file):
-                    with open(self.data_file, 'r', encoding='utf-8') as f:
-                        data = json.load(f)
-                        self.items = [LostItem.from_dict(item) for item in data]
-                    print(f"Loaded {len(self.items)} items from database.")
-                else:
-                    print("No existing data file found. Starting with empty database.")
-            except Exception as e:
-                print(f"Error loading data: {e}")
-                self.items = []
+        """Load items from JSON file"""
+        try:
+            if os.path.exists(self.data_file):
+                with open(self.data_file, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                    self.items = [LostItem.from_dict(item) for item in data]
+                print(f"Loaded {len(self.items)} items from database.")
+            else:
+                print("No existing data file found. Starting with empty database.")
+        except Exception as e:
+            print(f"Error loading data: {e}")
+            self.items = []
 
     def save_requests(self):
         try:
@@ -52,7 +46,7 @@ class System:
                 with open(self.requests_file, 'r', encoding='utf-8') as f:
                     data = json.load(f)
                 self.requests = [LostRequest.from_dict(request)
-                    for request in data]
+                                 for request in data]
                 print(f"Loaded {len(self.requests)} lost requests.")
             else:
                 print("No existing requests file found.")
@@ -75,66 +69,89 @@ class System:
 
     def add_item(self, item):
         self.items.append(item)
-        self.save_data()  # Save immediately after adding
+        self.save_data()
 
     def search_item(self, category, brand, colour, description):
         matches = []
         for item in self.items:
-            item_text = (item.category + " " + item.brand + " " + item.colour + " " + item.description).lower()
-            search_text = (category + " " + brand + " " + colour + " " + description).lower()
+            item_text = (item.category + " " + item.brand + " " +
+                         item.colour + " " + item.description).lower()
+            search_text = (category + " " + brand + " " +
+                           colour + " " + description).lower()
 
             similarity = difflib.SequenceMatcher(
                 None, search_text, item_text).ratio()
+
             if similarity > 0.5:
-                print(f"Possible match: {item.show_info()} (Similarity: {similarity})")
+                print(f"Possible match: {item.show_info()} "
+                      f"(Similarity: {similarity})")
                 confirm = input("Is this your item? (yes/no): ")
+
                 if confirm.lower() == "yes":
-                    item.status = "claimed"
+                    self.claim_item(item)
                     matches.append((item, similarity))
+
         if matches:
             self.save_data()
         return matches
 
+    def claim_item(self, item):
+        if item.status == "found":
+            item.status = "claimed"
+            self.save_data()
+            return True
+        return False
+
     def search_requests(self, item):
         matches = []
         for request in self.requests:
-            item_text = (item.category + " " + item.brand + " " + item.colour + " " + item.description).lower()
-            request_text = (request.category + " " + request.brand + " " + request.colour + " " + request.description).lower()
-            similarity = difflib.SequenceMatcher(None, item_text, request_text).ratio()
+            item_text = (item.category + " " + item.brand + " " +
+                         item.colour + " " + item.description).lower()
+            request_text = (request.category + " " + request.brand + " " +
+                            request.colour + " " + request.description).lower()
+
+            similarity = difflib.SequenceMatcher(
+                None, item_text, request_text).ratio()
+
             if similarity > 0.5:
                 matches.append((request, similarity))
         return matches
-    
+
     def search_by_category(self, category):
         matches = []
         for item in self.items:
             if item.category.lower() == category.lower():
                 matches.append(item)
+
         if not matches:
             print("No items found in this category.")
         else:
             for item in matches:
                 print(item.show_info())
         return matches
+
     def show_items(self):
         if not self.items:
             print("No items registered yet.")
             return
+
         for item in self.items:
             print(item.show_info())
 
+    def get_item_age(self, item):
+        return (datetime.now() - item.date_found).days
+
     def remove_item(self, item):
-        days = (datetime.now() - item.date_found).days
+        days = self.get_item_age(item)
+
         if days >= 30 or item.status == "claimed":
             self.items.remove(item)
             self.save_data()
             return True
         return False
-    
+
     def find_item(self, item_id):
         for item in self.items:
             if item.id == item_id:
                 return item
         return None
-
-system1 = System()
