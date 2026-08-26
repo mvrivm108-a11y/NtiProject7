@@ -2,6 +2,8 @@ from datetime import datetime
 import difflib
 import json
 import os
+from lost_item import LostItem
+from request_item import LostRequest
 class System:
     def __init__(self):
         self.items = []
