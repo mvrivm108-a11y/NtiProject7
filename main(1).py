@@ -3,8 +3,10 @@ from lost_item import LostItem
 
 system1 = System()
 fixed_password = 'admin123'
-while True:                                                    ##### EDITED
-    welcome = input('''===Welcome to the lost and found program===\nEnter lost if you lost an object and need to search for it.\nEnter found if you found a lost item and want to register it :''')
+while True:                                                   
+    welcome = input('''===Welcome to the lost and found program===
+Enter lost if you lost an object and need to search for it.
+Enter found if you found a lost item and want to register it :''')
     print("\n=====================================================\n")
     
     if welcome.lower() == 'found':
@@ -13,6 +15,7 @@ while True:                                                    ##### EDITED
             password = input('Enter password for verification: ')
             if password == fixed_password:
                 print('Verification completed successfully!\n')
+
                 while True:
                     print("===== MANAGEMENT MENU =====")
                     print('1. Add found item')
@@ -23,15 +26,15 @@ while True:                                                    ##### EDITED
                     
                     if management_choice == 1:
                         print("""===== Categories =====
-                                1. Bag
-                                2. Watch
-                                3. Ring
-                                4. Phone
-                                5. Passport
-                                6. Book
-                                7. Clothes
-                                8. Keys
-                                9. Other""")
+1. Bag
+2. Watch
+3. Ring
+4. Phone
+5. Passport
+6. Book
+7. Clothes
+8. Keys
+9. Other""")
                         category_choice = int(input("Enter the category number: "))
                         if category_choice == 1:
                             category1 = "Bag"
@@ -66,7 +69,7 @@ while True:                                                    ##### EDITED
                         
                         found_item = LostItem(item_id, category1, brand1, colour1, description1)
                         system1.add_item(found_item)
-                        print('Item added successfully!')
+                        
                         request_matches = system1.search_requests(found_item)
                         if request_matches:
                             print("\n===== POSSIBLE LOST REQUESTS =====")
@@ -96,11 +99,12 @@ while True:                                                    ##### EDITED
                         break
                     else:
                         print("Invalid choice.")
-                
+                        continue
                 continuation = int(input('Enter 1 to return to the first menu\nEnter 2 to Exit: '))
                 if continuation == 1:
                     continue
-                elif continuation == 2:                      #print('Thanks for using our system!')
+                elif continuation == 2:
+                    print('Thanks for using our system!')
                     break
                 else:
                     print("Wrong choice, Exiting")
@@ -112,78 +116,112 @@ while True:                                                    ##### EDITED
         elif state.lower() == 'l':
             print('Sorry! Access Not Allowed')
             print('Please hand the item to the nearest security point\n')
-            #print('Thanks for using our system!')
-            #break
+            print('Thanks for using our system!')
+            break
         else:
             print('Error! Check your choice again.')
             continue
 
     elif welcome.lower() == 'lost':
-        print("===== USER MENU =====")
-        print("1. Show all found items")
-        print("2. Search by category")
-        print("3. Search for a lost item")
-        print("4. Exit")
-        choice = int(input("Enter your choice: "))
+        while True:
+            print("===== USER MENU =====")
+            print("1. Show all found items")
+            print("2. Search by category")
+            print("3. Search for a lost item")
+            print("4. Exit")
+            choice = int(input("Enter your choice: "))
         
-        if choice == 1:
-            system1.show_items()
-        elif choice == 2:
-            print("""===== Categories =====
-                    1. Bag
-                    2. Watch
-                    3. Ring
-                    4. Phone
-                    5. Passport
-                    6. Book
-                    7. Clothes
-                    8. Keys
-                    9. Other""")
-            category_choice = int(input("Enter the category number: "))
-            if category_choice == 1:
-                category1 = "Bag"
-            elif category_choice == 2:
-                category1 = "Watch"
-            elif category_choice == 3:
-                category1 = "Ring"
-            elif category_choice == 4:
-                category1 = "Phone"
-            elif category_choice == 5:
-                category1 = "Passport"
-            elif category_choice == 6:
-                category1 = "Book"
-            elif category_choice == 7:
-                category1 = "Clothes"
-            elif category_choice == 8:
-                category1 = "Keys"
-            elif category_choice == 9:
-                category1 = "Other"
-            else:
-                print("Invalid category.")
+            if choice == 1:
+                system1.show_items()
                 continue
-            system1.search_by_category(category1)
-        elif choice == 3:
-            print("Enter the information about your lost item.")
-            category = input("Enter category: ")                 # category like above?
-            brand = input("Enter brand or name: ")
-            colour = input("Enter colour: ")
-            description = input("Enter description: ")
 
-            matches = system1.search_item(category, brand, colour, description)
-            if matches:
-                for item, sim in matches:
-                    print(f"Match found: {item.show_info()} "f"(Similarity: {sim:.2f})")
-                    system1.remove_item(item)
-            else:
-                print("No matching items found.")
-                create = input("Would you like to create a lost request? (y or n): ")
-                if create.lower() == "y":
-                    request = system1.create_request(category, brand, colour, description)
-                    print("Lost request created successfully!")
-                    print(request.show_info())
-        elif choice == 4:
-            print("Exiting")
-            break
+            elif choice == 2:
+                print("""===== Categories =====
+1. Bag
+2. Watch
+3. Ring
+4. Phone
+5. Passport
+6. Book
+7. Clothes
+8. Keys
+9. Other""")
+                category_choice = int(input("Enter the category number: "))
+                if category_choice == 1:
+                    category1 = "Bag"
+                elif category_choice == 2:
+                    category1 = "Watch"
+                elif category_choice == 3:
+                    category1 = "Ring"
+                elif category_choice == 4:
+                    category1 = "Phone"
+                elif category_choice == 5:
+                    category1 = "Passport"
+                elif category_choice == 6:
+                    category1 = "Book"
+                elif category_choice == 7:
+                    category1 = "Clothes"
+                elif category_choice == 8:
+                    category1 = "Keys"
+                elif category_choice == 9:
+                    category1 = "Other"
+                else:
+                    print("Invalid category.")
+                    continue
+                system1.search_by_category(category1)
+            elif choice == 3:
+                print("Enter the information about your lost item.")
+                print("""===== Categories =====
+1. Bag
+2. Watch
+3. Ring
+4. Phone
+5. Passport
+6. Book
+7. Clothes
+8. Keys
+9. Other""")
+                category_choice = int(input("Enter the category number: "))
+                if category_choice == 1:
+                    category1 = "Bag"
+                elif category_choice == 2:
+                    category1 = "Watch"
+                elif category_choice == 3:
+                    category1 = "Ring"
+                elif category_choice == 4:
+                    category1 = "Phone"
+                elif category_choice == 5:
+                    category1 = "Passport"
+                elif category_choice == 6:
+                    category1 = "Book"
+                elif category_choice == 7:
+                    category1 = "Clothes"
+                elif category_choice == 8:
+                    category1 = "Keys"
+                elif category_choice == 9:
+                    category1 = "Other"
+                else:
+                    print("Invalid category.")
+                    continue                # category like above?
+                brand = input("Enter brand or name: ")
+                colour = input("Enter colour: ")
+                description = input("Enter description: ")
+
+                matches = system1.search_item(category1, brand, colour, description)
+                if matches:
+                    for item, sim in matches:
+                        print(f"Match found: {item.show_info()}")
+                        system1.remove_item(item)
+                else:
+                    print("No matching items found.")
+                    create = input("Would you like to create a lost request? (y or n): ")
+                    if create.lower() == "y":
+                        request = system1.create_request(category1, brand, colour, description)
+                        print("Lost request created successfully!")
+                        print(request.show_info())
+            elif choice == 4:
+                print("Exiting")
+                break
             
     else:
         print("Invalid choice, Exiting")
