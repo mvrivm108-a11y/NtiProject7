@@ -6,7 +6,8 @@ fixed_password = 'admin123'
 while True:                                                   
     welcome = input('''===Welcome to the lost and found program===
 Enter lost if you lost an object and need to search for it.
-Enter found if you found a lost item and want to register it :''')
+Enter found if you found a lost item and want to register it.
+Enter done to exit the program:''')
     print("\n=====================================================\n")
     
     if welcome.lower() == 'found':
@@ -217,11 +218,16 @@ Enter found if you found a lost item and want to register it :''')
                     create = input("Would you like to create a lost request? (y or n): ")
                     if create.lower() == "y":
                         request = system1.create_request(category1, brand, colour, description)
-                        print("Lost request created successfully!")
                         print(request.show_info())
             elif choice == 4:
                 print("Exiting")
+                print('Thanks for using our system!')
                 break
+            
+    elif welcome.lower() == 'done':
+        print("Exiting") 
+        print('Thanks for using our system!')
+        break        
             
     else:
         print("Invalid choice, Exiting")
